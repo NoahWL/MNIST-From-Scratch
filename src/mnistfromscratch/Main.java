@@ -10,10 +10,11 @@ public class Main
 {
 	public Main()
 	{
-		readIdxImages("./dataset/train-images.idx3-ubyte");
+		byte[][][] trainImages = readIDXImages("./dataset/train-images.idx3-ubyte");
+		byte[] trainLabels = readIDXLabels("./dataset/train-labels.idx1-ubyte");
 	}
 
-	public void readIdxImages(String filePath)
+	public byte[][][] readIDXImages(String filePath)
 	{
 		ByteBuffer buf;
 		try
@@ -35,15 +36,34 @@ public class Main
 			{
 				int flatRowOffset = imageNum * imageHeight * imageWidth + rowIndex * imageWidth + 16;
 				buf.get(flatRowOffset, imageBytes[imageNum][rowIndex], 0, imageWidth);
-				//System.out.println(imageNum + " " + Arrays.toString(imageBytes[imageNum][rowIndex]));
+				// System.out.println(imageNum + " " + Arrays.toString(imageBytes[imageNum][rowIndex]));
 			}
-			//System.out.println();
+			// System.out.println();
 		}
-		
+
+		return imageBytes;
+	}
+
+	public byte[] readIDXLabels(String filePath)
+	{
+		ByteBuffer buf;
+		try
+		{
+			byte[] bytes = Files.readAllBytes(new File(filePath).toPath());
+			buf = ByteBuffer.wrap(bytes);
+		} catch (IOException e)
+		{
+			throw new RuntimeException(e);
+		}
+		int labelCount = buf.getInt(4);
+		byte[] labelBytes = new byte[labelCount];
+		buf.get(8, labelBytes, 0, labelCount);
+
+		return labelBytes;
 	}
 
 	public static void main(String[] args)
 	{
-		Main main = new Main();
+		new Main();
 	}
 }
