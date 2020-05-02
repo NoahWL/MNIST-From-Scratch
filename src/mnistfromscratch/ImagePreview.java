@@ -1,6 +1,5 @@
 package mnistfromscratch;
 
-import java.awt.BorderLayout;
 import java.awt.image.BufferedImage;
 
 import javax.swing.ImageIcon;

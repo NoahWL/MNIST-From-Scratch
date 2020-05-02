@@ -10,8 +10,8 @@ public class Main
 {
 	public Main()
 	{
-		byte[][][] trainImages = readIDXImages("./dataset/train-images.idx3-ubyte");
 		byte[] trainLabels = readIDXLabels("./dataset/train-labels.idx1-ubyte");
+		byte[][][] trainImages = readIDXImages("./dataset/train-images.idx3-ubyte");
 	}
 
 	public byte[][][] readIDXImages(String filePath)
@@ -34,7 +34,7 @@ public class Main
 		{
 			for (int rowIndex = 0; rowIndex < imageHeight; rowIndex++)
 			{
-				int flatRowOffset = imageNum * imageHeight * imageWidth + rowIndex * imageWidth + 16;
+				int flatRowOffset = (imageNum * imageHeight * imageWidth) + (rowIndex * imageWidth) + 16; // Image data starts 16 bytes into file
 				buf.get(flatRowOffset, imageBytes[imageNum][rowIndex], 0, imageWidth);
 				// System.out.println(imageNum + " " + Arrays.toString(imageBytes[imageNum][rowIndex]));
 			}
@@ -57,7 +57,7 @@ public class Main
 		}
 		int labelCount = buf.getInt(4);
 		byte[] labelBytes = new byte[labelCount];
-		buf.get(8, labelBytes, 0, labelCount);
+		buf.get(8, labelBytes, 0, labelCount); // Label data starts 8 bytes into file
 
 		return labelBytes;
 	}
