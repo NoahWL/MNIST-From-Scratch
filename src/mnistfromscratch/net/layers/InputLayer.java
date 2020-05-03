@@ -17,6 +17,8 @@ public class InputLayer extends Layer1D
 	@Override
 	public float[] calcOutputs()
 	{
+		if (this.inputData == null)
+			throw new RuntimeException("Input Layer has no input set!");
 		return this.inputData;
 	}
 }

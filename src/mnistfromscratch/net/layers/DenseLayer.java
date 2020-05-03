@@ -1,17 +1,20 @@
 package mnistfromscratch.net.layers;
 
+import java.util.Random;
+
 public class DenseLayer extends StackedLayer1D
 {
 	public static final int bias = 1;
-	
+
 	protected final float[][] weights;
 	protected final float[] outputs;
 
 	public DenseLayer(int numNodes, Layer1D lastLayer) // TODO: Accept activation function
 	{
 		super(numNodes, lastLayer);
-		this.weights = new float[numNodes][lastLayer.getSize()]; // TODO: Initialize randomly
 		this.outputs = new float[numNodes];
+		this.weights = new float[numNodes][lastLayer.getSize()];
+		initializeWeights();
 	}
 
 	@Override
@@ -51,5 +54,22 @@ public class DenseLayer extends StackedLayer1D
 	private float sigmoid(float x)
 	{
 		return 1f / (1f + (float) Math.exp(-x));
+	}
+
+	/*
+	 * TODO: Check/improve.  I don't understand the math behind choosing weights so just implementing something that's simple to me right now.
+	 * https://stats.stackexchange.com/a/186351
+	 */
+	private void initializeWeights()
+	{
+		double r = 4 * Math.sqrt(6 / (lastLayer.getSize() + this.size));
+		Random rand = new Random();
+		for (int node = 0; node < this.size; node++)
+		{
+			for (int weight = 0; weight < weights[node].length; weight++)
+			{
+				weights[node][weight] = (float) ((2 * rand.nextGaussian() - 1) * r);
+			}
+		}
 	}
 }

@@ -60,7 +60,7 @@ public class Preprocessor
 		return normalized;
 	}
 
-	private static float[] normalize(byte[] arr)
+	public static float[] normalize(byte[] arr)
 	{
 		float[] normalized = new float[arr.length];
 		for (int i = 0; i < arr.length; i++)

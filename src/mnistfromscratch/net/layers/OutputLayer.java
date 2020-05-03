@@ -3,9 +3,9 @@ package mnistfromscratch.net.layers;
 public class OutputLayer extends DenseLayer
 {
 
-	public OutputLayer(int size, Layer1D lastLayer) // size = classes (for classification tasks)
+	public OutputLayer(int classes, Layer1D lastLayer)
 	{
-		super(size, lastLayer);
+		super(classes, lastLayer);
 	}
 
 	/*

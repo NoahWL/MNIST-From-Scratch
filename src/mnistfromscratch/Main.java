@@ -6,12 +6,24 @@ import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.util.Arrays;
 
+import mnistfromscratch.net.layers.DenseLayer;
+import mnistfromscratch.net.layers.InputLayer;
+import mnistfromscratch.net.layers.OutputLayer;
+
 public class Main
 {
 	public Main()
 	{
 		float[][] trainLabels = Preprocessor.oneHot(readIDXLabels("./dataset/train-labels.idx1-ubyte"), 9);
 		float[][] trainImages = Preprocessor.preprocessImages(readIDXImages("./dataset/train-images.idx3-ubyte"));
+
+		InputLayer inputLayer = new InputLayer(trainImages[0].length);
+		DenseLayer hidden1 = new DenseLayer(128, inputLayer);
+		OutputLayer outputLayer = new OutputLayer(10, hidden1);
+
+		inputLayer.setInputData(trainImages[0]);
+		float[] output = outputLayer.calcOutputs();
+		System.out.println(Arrays.toString(output));
 	}
 
 	public byte[][][] readIDXImages(String filePath)
