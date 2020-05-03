@@ -2,6 +2,8 @@ package mnistfromscratch.net.layers;
 
 public class DenseLayer extends StackedLayer1D
 {
+	public static final int bias = 1;
+	
 	protected final float[][] weights;
 	protected final float[] outputs;
 
@@ -15,10 +17,12 @@ public class DenseLayer extends StackedLayer1D
 	@Override
 	public float[] calcOutputs()
 	{
-		return calcOutputsSigmoid();
+		calcRawOutputs();
+		applyActivation();
+		return outputs;
 	}
 
-	private float[] calcOutputsSigmoid()
+	protected void calcRawOutputs()
 	{
 		float[] inputVals = lastLayer.calcOutputs();
 
@@ -30,7 +34,22 @@ public class DenseLayer extends StackedLayer1D
 				outputs[node] += inputVals[inputNode] * weights[node][inputNode];
 			}
 		}
+	}
 
-		return outputs;
+	protected void applyActivation()
+	{
+		for (int node = 0; node < this.size; node++)
+		{
+			outputs[node] = sigmoid(outputs[node]) + bias;
+		}
+	}
+
+	/*
+	 * https://brilliant.org/wiki/artificial-neural-network/#the-sigmoid-function
+	 * f(x) = 1 / (1 + e^-x)
+	 */
+	private float sigmoid(float x)
+	{
+		return 1f / (1f + (float) Math.exp(-x));
 	}
 }

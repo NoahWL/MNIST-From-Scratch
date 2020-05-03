@@ -21,8 +21,9 @@ public class Preprocessor
 		for (int i = 0; i < labels.length; i++)
 		{
 			int val = labels[i];
-			if (val >= maxDataSize)
-				throw new RuntimeException("OneHot Failed: Label data exceeds specified maximum size.");
+			if (val > maxDataSize)
+				throw new RuntimeException("OneHot Failed: Label data exceeds specified maximum size.  (Got: " + val
+				        + " Max: " + maxDataSize);
 			oneHotted[i][val] = 1;
 		}
 

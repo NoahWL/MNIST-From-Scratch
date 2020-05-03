@@ -10,8 +10,8 @@ public class Main
 {
 	public Main()
 	{
-		byte[] trainLabels = readIDXLabels("./dataset/train-labels.idx1-ubyte");
-		byte[][][] trainImages = readIDXImages("./dataset/train-images.idx3-ubyte");
+		float[][] trainLabels = Preprocessor.oneHot(readIDXLabels("./dataset/train-labels.idx1-ubyte"), 9);
+		float[][] trainImages = Preprocessor.preprocessImages(readIDXImages("./dataset/train-images.idx3-ubyte"));
 	}
 
 	public byte[][][] readIDXImages(String filePath)
