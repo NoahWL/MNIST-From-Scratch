@@ -65,11 +65,19 @@ public class Preprocessor
 		float[] normalized = new float[arr.length];
 		for (int i = 0; i < arr.length; i++)
 		{
-			float data = arr[i];
-			data += 128f; // Signed to unsigned byte
+			float data = unsignedByteToFloat(arr[i]);
 			normalized[i] = data / 255f;
 		}
 
 		return normalized;
+	}
+
+	public static float unsignedByteToFloat(byte signedByte)
+	{
+		float val = signedByte;
+		if (val < 0)
+			val = val + 256;
+		return val;
+
 	}
 }
