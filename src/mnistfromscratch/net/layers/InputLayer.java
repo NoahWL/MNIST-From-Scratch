@@ -2,7 +2,6 @@ package mnistfromscratch.net.layers;
 
 public class InputLayer extends Layer1D
 {
-	private float[] inputData;
 
 	public InputLayer(int inputDataSize)
 	{
@@ -11,14 +10,12 @@ public class InputLayer extends Layer1D
 
 	public void setInputData(float[] inputData)
 	{
-		this.inputData = inputData;
+		System.arraycopy(inputData, 0, this.outputs, 0, size);
 	}
 
 	@Override
-	public float[] calcOutputs()
+	public float[] calcOutputsRecursive()
 	{
-		if (this.inputData == null)
-			throw new RuntimeException("Input Layer has no input set!");
-		return this.inputData;
+		return this.outputs;
 	}
 }

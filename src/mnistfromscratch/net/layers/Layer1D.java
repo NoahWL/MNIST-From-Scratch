@@ -3,9 +3,12 @@ package mnistfromscratch.net.layers;
 public abstract class Layer1D
 {
 	protected final int size;
+	protected final float[] outputs;
 
 	public Layer1D(final int size)
 	{
+		this.outputs = new float[size];
+		
 		this.size = size;
 	}
 
@@ -14,5 +17,5 @@ public abstract class Layer1D
 		return this.size;
 	}
 
-	public abstract float[] calcOutputs();
+	public abstract float[] calcOutputsRecursive();
 }

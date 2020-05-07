@@ -18,12 +18,13 @@ public class Main
 		float[][] trainImages = Preprocessor.preprocessImages(readIDXImages("./dataset/train-images.idx3-ubyte"));
 
 		InputLayer inputLayer = new InputLayer(trainImages[0].length);
-		DenseLayer hidden1 = new DenseLayer(128, inputLayer);
+		DenseLayer hidden1 = new DenseLayer(trainImages[0].length, inputLayer);
 		OutputLayer outputLayer = new OutputLayer(10, hidden1);
 
 		inputLayer.setInputData(trainImages[0]);
-		float[] output = outputLayer.calcOutputs();
-		System.out.println(Arrays.toString(output));
+		System.out.println("Input: " + Arrays.toString(trainImages[0]));
+		float[] output = outputLayer.calcOutputsRecursive();
+		System.out.println("Output: " + Arrays.toString(output));
 	}
 
 	public byte[][][] readIDXImages(String filePath)

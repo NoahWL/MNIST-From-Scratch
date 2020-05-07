@@ -1,5 +1,6 @@
 package mnistfromscratch.net.layers;
 
+import java.util.Arrays;
 import java.util.Random;
 
 public class DenseLayer extends StackedLayer1D
@@ -7,31 +8,54 @@ public class DenseLayer extends StackedLayer1D
 	public static final int bias = 1;
 
 	protected final float[][] weights;
-	protected final float[] outputs;
+	protected final float[] weightErrorSums;
 
-	public DenseLayer(int numNodes, Layer1D lastLayer) // TODO: Accept activation function
+	public DenseLayer(int size, Layer1D lastLayer) // TODO: Accept activation function
 	{
-		super(numNodes, lastLayer);
-		this.outputs = new float[numNodes];
-		this.weights = new float[numNodes][lastLayer.getSize()];
+		super(size, lastLayer);
+		this.weightErrorSums = new float[this.size];
+		this.weights = new float[size][lastLayer.getSize()];
 		initializeWeights();
 	}
 
 	@Override
-	public float[] calcOutputs()
+	public float[] calcOutputsRecursive()
 	{
-		calcRawOutputs();
-		applyActivation();
+		applyWeights();
+		applyActivationFunction();
 		return outputs;
 	}
 
-	protected void calcRawOutputs()
+	public float[] calcWeightErrorSums()
 	{
-		float[] inputVals = lastLayer.calcOutputs();
+		for (int nodeInd = 0; nodeInd < weights.length; nodeInd++)
+		{
+			weightErrorSums[nodeInd] = 0;
+			for (int weightInd = 0; weightInd < weights[nodeInd].length; weightInd++)
+			{
+				weightErrorSums[nodeInd] += weights[nodeInd][weightInd] * error[nodeInd];
+			}
+		}
+
+		return weightErrorSums;
+	}
+
+	@Override
+	public void calcLayerError(float[] nextLayerWeightErrorSums)
+	{
+		for (int nodeInd = 0; nodeInd < this.size; nodeInd++)
+		{
+			error[nodeInd] = outputs[nodeInd] * (1 - outputs[nodeInd]) * nextLayerWeightErrorSums[nodeInd];
+		}
+	}
+
+	protected void applyWeights() // activation "a"
+	{
+		float[] inputVals = lastLayer.calcOutputsRecursive();
 
 		for (int node = 0; node < this.size; node++)
 		{
-			outputs[node] = 0;
+			outputs[node] = bias;
 			for (int inputNode = 0; inputNode < lastLayer.getSize(); inputNode++)
 			{
 				outputs[node] += inputVals[inputNode] * weights[node][inputNode];
@@ -39,11 +63,11 @@ public class DenseLayer extends StackedLayer1D
 		}
 	}
 
-	protected void applyActivation()
+	protected void applyActivationFunction() // output "o"
 	{
 		for (int node = 0; node < this.size; node++)
 		{
-			outputs[node] = sigmoid(outputs[node]) + bias;
+			outputs[node] = sigmoid(outputs[node]);
 		}
 	}
 
@@ -62,14 +86,15 @@ public class DenseLayer extends StackedLayer1D
 	 */
 	private void initializeWeights()
 	{
-		double r = 4 * Math.sqrt(6 / (lastLayer.getSize() + this.size));
+		double r = 4 * Math.sqrt(6.0 / (lastLayer.getSize() + this.size));
 		Random rand = new Random();
 		for (int node = 0; node < this.size; node++)
 		{
 			for (int weight = 0; weight < weights[node].length; weight++)
 			{
-				weights[node][weight] = (float) ((2 * rand.nextGaussian() - 1) * r);
+				weights[node][weight] = (float) (rand.nextGaussian() * r);
 			}
 		}
+		// System.out.println("Weights: " + Arrays.toString(weights[0]));
 	}
 }

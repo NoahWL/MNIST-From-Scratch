@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import mnistfromscratch.Preprocessor;
+import mnistfromscratch.net.layers.DenseLayer;
 import mnistfromscratch.net.layers.InputLayer;
 
 class DenseLayerTests
@@ -18,16 +19,17 @@ class DenseLayerTests
 	@Test
 	void showWeights()
 	{
-		System.out.println("Test");
 		byte[] inputs = new byte[15];
 		for (byte i = 0; i < inputs.length; i++)
-			inputs[i] = (byte) (i - (inputs.length / 2));
+			inputs[i] = i;
 		System.out.println("Inputs: " + Arrays.toString(inputs));
 		float[] inputsNorm = Preprocessor.normalize(inputs);
 		System.out.println("Normed inputs: " + Arrays.toString(inputsNorm));
 
-		InputLayer input = new InputLayer(15);
+		InputLayer input = new InputLayer(16);
 		input.setInputData(inputsNorm);
+		DenseLayer dense = new DenseLayer(16, input);
+		dense.calcOutputsRecursive();
 	}
 
 }

@@ -29,10 +29,13 @@ class PreprocesssorTests
 	@Test
 	void testShowNormalize()
 	{
-		byte[] testData = new byte[255];
+		byte[] testData = new byte[256];
 		for (int i = 0; i < testData.length; i++)
 			testData[i] = (byte) i;
 		System.out.println(Arrays.toString(testData));
+
+		float[] normalized = Preprocessor.normalize(testData);
+		System.out.println(Arrays.toString(normalized));
 	}
 
 }
