@@ -13,8 +13,8 @@ public class DenseLayer extends StackedLayer1D
 	public DenseLayer(int size, Layer1D lastLayer) // TODO: Accept activation function
 	{
 		super(size, lastLayer);
-		this.weightErrorSums = new float[this.size];
-		this.weights = new float[size][lastLayer.getSize()];
+		this.weightErrorSums = new float[lastLayer.getSize()];
+		this.weights = new float[size][lastLayer.getSize()]; // [node in this layer][weight for incoming node]
 		initializeWeights();
 	}
 
@@ -26,14 +26,15 @@ public class DenseLayer extends StackedLayer1D
 		return outputs;
 	}
 
+	@Override
 	public float[] calcWeightErrorSums()
 	{
-		for (int nodeInd = 0; nodeInd < weights.length; nodeInd++)
+		for (int incomingNodeInd = 0; incomingNodeInd < lastLayer.getSize(); incomingNodeInd++)
 		{
-			weightErrorSums[nodeInd] = 0;
-			for (int weightInd = 0; weightInd < weights[nodeInd].length; weightInd++)
+			weightErrorSums[incomingNodeInd] = 0;
+			for (int nodeInd = 0; nodeInd < this.size; nodeInd++)
 			{
-				weightErrorSums[nodeInd] += weights[nodeInd][weightInd] * error[nodeInd];
+				weightErrorSums[incomingNodeInd] += weights[nodeInd][incomingNodeInd] * errorTerms[nodeInd];
 			}
 		}
 
@@ -41,12 +42,32 @@ public class DenseLayer extends StackedLayer1D
 	}
 
 	@Override
-	public void calcLayerError(float[] nextLayerWeightErrorSums)
+	public void calcLayerErrorTerms(float[] nextLayerWeightErrorSums)
 	{
 		for (int nodeInd = 0; nodeInd < this.size; nodeInd++)
 		{
-			error[nodeInd] = outputs[nodeInd] * (1 - outputs[nodeInd]) * nextLayerWeightErrorSums[nodeInd];
+			errorTerms[nodeInd] = outputs[nodeInd] * (1 - outputs[nodeInd]) * nextLayerWeightErrorSums[nodeInd];
 		}
+	}
+
+	@Override
+	public void calcLayerErrorDeriv(float[] lastLayerOutputs)
+	{
+		for (int nodeInd = 0; nodeInd < this.size; nodeInd++)
+		{
+			for (int weightInd = 0; weightInd < lastLayer.getSize(); weightInd++)
+			{
+				errorDerivs[nodeInd][weightInd] = errorTerms[nodeInd] * lastLayerOutputs[weightInd];
+			}
+		}
+	}
+
+	@Override
+	public void updateWeights(float trainingRate)
+	{
+		for (int i = 0; i < weights.length; i++)
+			for (int j = 0; j < weights[0].length; j++)
+				weights[i][j] -= averageErrorDerivs[i][j] * trainingRate;
 	}
 
 	protected void applyWeights() // activation "a"
@@ -86,7 +107,7 @@ public class DenseLayer extends StackedLayer1D
 	 */
 	private void initializeWeights()
 	{
-		double r = 4 * Math.sqrt(6.0 / (lastLayer.getSize() + this.size));
+		double r = Math.sqrt(2.0 / (lastLayer.getSize() + this.size));
 		Random rand = new Random();
 		for (int node = 0; node < this.size; node++)
 		{

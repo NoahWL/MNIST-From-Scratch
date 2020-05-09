@@ -16,6 +16,11 @@ public abstract class Layer1D
 	{
 		return this.size;
 	}
+	
+	public float[] getOutputs()
+	{
+		return this.outputs;
+	}
 
 	public abstract float[] calcOutputsRecursive();
 }

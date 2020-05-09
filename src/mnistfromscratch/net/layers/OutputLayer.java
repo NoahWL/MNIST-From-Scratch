@@ -8,16 +8,16 @@ public class OutputLayer extends DenseLayer
 		super(classes, lastLayer);
 	}
 
-	public void calcOutputError(float[] expected)
+	public void calcOutputErrorTerms(float[] expected)
 	{
 		for (int i = 0; i < this.size; i++)
 		{
-			this.error[i] = this.outputs[i] - expected[i];
+			this.errorTerms[i] = this.outputs[i] - expected[i];
 		}
 	}
 
 	@Override
-	public void calcLayerError(float[] nextLayerWeightErrorSums)
+	public void calcLayerErrorTerms(float[] nextLayerWeightErrorSums)
 	{
 		throw new UnsupportedOperationException("Use calcOutputError on OutputLayer"); // TODO: Separate DenseLayer and OutputLayer
 	}

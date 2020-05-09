@@ -6,6 +6,7 @@ import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.util.Arrays;
 
+import mnistfromscratch.net.FeedForwardNetwork;
 import mnistfromscratch.net.layers.DenseLayer;
 import mnistfromscratch.net.layers.InputLayer;
 import mnistfromscratch.net.layers.OutputLayer;
@@ -17,6 +18,14 @@ public class Main
 		float[][] trainLabels = Preprocessor.oneHot(readIDXLabels("./dataset/train-labels.idx1-ubyte"), 9);
 		float[][] trainImages = Preprocessor.preprocessImages(readIDXImages("./dataset/train-images.idx3-ubyte"));
 
+		float[][] trainLabelsShort = new float[10000][];
+		float[][] trainImagesShort = new float[10000][];
+		for (int i = 0; i < trainLabelsShort.length; i++)
+		{
+			trainLabelsShort[i] = trainLabels[i];
+			trainImagesShort[i] = trainImages[i];
+		}
+
 		InputLayer inputLayer = new InputLayer(trainImages[0].length);
 		DenseLayer hidden1 = new DenseLayer(trainImages[0].length, inputLayer);
 		OutputLayer outputLayer = new OutputLayer(10, hidden1);
@@ -25,6 +34,12 @@ public class Main
 		System.out.println("Input: " + Arrays.toString(trainImages[0]));
 		float[] output = outputLayer.calcOutputsRecursive();
 		System.out.println("Output: " + Arrays.toString(output));
+
+		FeedForwardNetwork ffn = new FeedForwardNetwork(trainImages[0].length);
+		ffn.addDenseLayer(trainImages[0].length);
+		ffn.build(10);
+
+		ffn.train(100, 200, 0.01f, trainImages, trainLabels);
 	}
 
 	public byte[][][] readIDXImages(String filePath)
