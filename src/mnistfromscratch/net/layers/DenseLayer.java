@@ -5,7 +5,7 @@ import java.util.Random;
 
 public class DenseLayer extends StackedLayer1D
 {
-	public static final int bias = 1;
+	public static final int bias = 0;
 
 	protected final float[][] weights;
 	protected final float[] weightErrorSums;
@@ -104,6 +104,7 @@ public class DenseLayer extends StackedLayer1D
 	/*
 	 * TODO: Check/improve.  I don't understand the math behind choosing weights so just implementing something that's simple to me right now.
 	 * https://stats.stackexchange.com/a/186351
+	 * https://keras.io/api/layers/initializers/
 	 */
 	private void initializeWeights()
 	{
